@@ -3,8 +3,6 @@ import pandas as pd
 from Movimentos_fixos import df
 
 def passo_1(cubo:pd.DataFrame):
-
-
     dicionario = mapear_meios(cubo)        
     
     i=0
@@ -203,43 +201,6 @@ b_linha(df, 'W')
 
 # caso 7 é bem especifico então tenho q dar uma olhada legal nisso
 
-
-# b(df, 'W')
-# r(df, 'W')
-# f_linha(df, 'W')
-# print_custom_df(df)
-# print("\n\n")
-# d_linha(df)
-# r(df, 'W')
-# r(df, 'W')
-# d(df)
-# d(df)
-# u_linha(df)
-# r(df, 'W')
-# r(df, 'W')
-# d_linha(df)
-# r_linha(df, 'W')
-# b_linha(df, 'W')
-
-
-# print_custom_df(df)
-# print("\n\n")
-# b(df, 'W')
-# r(df, 'W')
-# d(df)
-# r_linha(df, 'W')
-# r_linha(df, 'W')
-# u(df)
-# d_linha(df)
-# d_linha(df)
-# r_linha(df, 'W')
-# r_linha(df, 'W')
-# print_custom_df(df)
-# print("\n\n")
-# d(df)
-# f(df, 'W')
-# r_linha(df, 'W')
-# b_linha(df, 'W')
 
 print("\n\n")
 print_custom_df(df)
