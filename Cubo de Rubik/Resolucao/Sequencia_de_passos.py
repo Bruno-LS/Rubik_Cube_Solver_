@@ -1,8 +1,9 @@
 from Rotacoes import *
 import pandas as pd
 from Movimentos_fixos import df
+from Auxiliares_passos import *
 
-def passo_1(cubo:pd.DataFrame):
+def passo_1(cubo:pd.DataFrame):#faltando 2u
     dicionario = mapear_meios(cubo)        
     
     i=0
@@ -35,12 +36,98 @@ def passo_1(cubo:pd.DataFrame):
     print(i)
         
 
-def passo_2():
-    pass
+def passo_2(cubo:pd.DataFrame):
+    dicionario = verifica_laranja_topo(cubo)
 
+    for id in dicionario:
+        if id == 1:
+            face = 'Y'
+            centro_destino = cubo.loc[1 ,'Y'][0]
+        elif id == 3:
+            face = 'B'
+            centro_destino = cubo.loc[1 ,'B'][0]
+        elif id == 5:
+            face = 'G'
+            centro_destino = cubo.loc[1 ,'G'][0]
+        elif id == 7:
+            face = 'W'
+            centro_destino = cubo.loc[1 ,'W'][0]
+        direcao = verificar_centro(face, centro_destino)
 
-def passo_3():
-    pass
+        if direcao == 0:
+            f(cubo, face)
+            f(cubo, face)
+        elif direcao == 1:
+            u(cubo)
+            f(cubo, face)
+            f(cubo, face)
+        elif direcao == 2:
+            u(cubo)
+            u(cubo)
+            f(cubo, face)
+            f(cubo, face)
+        else:
+            u_linha(cubo)
+            f(cubo, face)
+            f(cubo, face)
+        
+
+def passo_3(cubo:pd.DataFrame):#falta mapear os adjacentes, e saber como será a orientação
+    dicionario = mapear_quina(cubo)
+    
+    for face, indice in dicionario.items():
+        str_face = str(face)
+        if indice == []:
+            continue
+        id = int(indice[0])
+        direcao = verificar_centro(str_face, cubo.loc[id , face][0])
+
+        if str_face == 'R':
+            #mapear local da quina na face laranja
+            r(cubo, face)
+            u(cubo)
+            u(cubo)
+            r_linha(cubo, face)
+            continue  
+        if id < 4:
+            if id == 0:            
+                if direcao == -1:
+                    u_linha(cubo)
+                elif direcao == 1:
+                    u(cubo)
+                elif direcao == 2:
+                    u(cubo)
+                    u(cubo)
+                else:
+                    l_linha(cubo, face)
+                    u(cubo)
+                    l(cubo, face)
+            else:
+                if direcao == -1:
+                    u_linha(cubo)
+                elif direcao == 1:
+                    u(cubo)
+                elif direcao == 2:
+                    u(cubo)
+                    u(cubo)
+                else:
+                    r(cubo, face)
+                    u_linha(cubo)
+                    r_linha(cubo, face)
+        if id > 4:
+            if direcao == -1:
+                u_linha(cubo)
+            elif direcao == 1:
+                u(cubo)
+            elif direcao == 2:
+                u(cubo)
+                u(cubo)
+            else:
+                r(cubo, face)
+                u(cubo)
+                u(cubo)
+                r_linha(cubo, face)
+        dicionario = mapear_quina(cubo)
 
 
 def passo_4():
@@ -64,142 +151,9 @@ def passo_8():
 
 
 
-
-def mapear_meios(cubo:pd.DataFrame):
-    # verificar nos indices 3, 5 primeiro e depois no 'O' nos indices impares e depois nos indices 1 e 7 das faces W, G, Y, B
-    dicionario = {}
-    for col in df.columns:
-        if col not in ['R', 'O']:
-            dicionario[col] = []
-            for i in range(1, len(df), 2):
-                if df.iloc[i, df.columns.get_loc(col)][0] == "O":
-                    dicionario[col].append(i)
-    
-    return dicionario
-                        
-
-def mapear_quina(cubo:pd.DataFrame, cor):#Inacabada
-    pass
+# caso 6 é bem especifico então tenho q dar uma olhada legal nisso
 
 
-def verificar_quinas(cubo:pd.DataFrame):#Inacabada
-    pass
-
-
-def verificar_movimento(cubo:pd.DataFrame, id:int, face:str):
-    if id == 3:
-        if face == 'Y' and cubo.loc[5, 'R'][0] == "O":
-            if cubo.loc[1, 'R'][0] == "O":
-                return -1
-            return 0
-        elif face == 'B' and cubo.loc[1, 'R'][0] == "O":
-            if cubo.loc[3, 'R'][0] == "O":
-                return -1
-            return 0
-        elif face == 'G' and cubo.loc[7, 'R'][0] == "O":
-            if cubo.loc[5, 'R'][0] == "O":
-                return -1
-            return 0
-        elif face == 'W' and cubo.loc[3, 'R'][0] == "O":
-            if cubo.loc[7, 'R'][0] == "O":
-                return -1
-            return 0
-        return 1
-    
-    if id == 5:
-        if face == 'Y' and cubo.loc[3, 'R'][0] == "O":
-            if cubo.loc[1, 'R'][0] == "O":
-                return -1
-            return 0
-        elif face == 'B' and cubo.loc[7, 'R'][0] == "O":
-            if cubo.loc[3, 'R'][0] == "O":
-                return -1
-            return 0
-        elif face == 'G' and cubo.loc[1, 'R'][0] == "O":
-            if cubo.loc[5, 'R'][0] == "O":
-                return -1
-            return 0
-        elif face == 'W' and cubo.loc[5, 'R'][0] == "O":
-            if cubo.loc[7, 'R'][0] == "O":
-                return -1
-            return 0
-        return 1 
-    
-
-
-b(df, 'W')
-r(df, 'W')
-f_linha(df, 'W')
-d_linha(df)
-r(df, 'W')
-r(df, 'W')
-d(df)
-d(df)
-u_linha(df)
-r(df, 'W')
-r(df, 'W')
-d_linha(df)
-r_linha(df, 'W')
-b_linha(df, 'W')
-r_linha(df, 'W')
-d(df)
-d(df)
-r(df, 'W')
-l_linha(df, 'W')
-u_linha(df)
-b(df, 'W')
-l_linha(df, 'W')
-d(df)
-d(df)
-r_linha(df, 'W')
-l(df, 'W')
-d(df)
-d(df)
-b(df, 'W')
-b(df, 'W')
-l_linha(df, 'W')
-d_linha(df)
-
-print_custom_df(df)
-
-
-
-d(df)
-l(df, 'W')
-b_linha(df, 'W')
-b_linha(df, 'W')
-d_linha(df)
-d_linha(df)
-l_linha(df, 'W')
-r(df, 'W')
-d_linha(df)
-d_linha(df)
-l(df, 'W')
-b_linha(df, 'W')
-u(df)
-l(df, 'W')
-r_linha(df, 'W') 
-d_linha(df)
-d_linha(df)
-r(df, 'W')
-b(df, 'W')
-r(df, 'W')
-d(df)
-r_linha(df, 'W')
-r_linha(df, 'W')
-u(df)
-d_linha(df)
-d_linha(df)
-r_linha(df, 'W')
-r_linha(df, 'W')
-d(df)
-f(df, 'W')
-r_linha(df, 'W')
-b_linha(df, 'W')
-
-
-
-# caso 7 é bem especifico então tenho q dar uma olhada legal nisso
 
 
 print("\n\n")

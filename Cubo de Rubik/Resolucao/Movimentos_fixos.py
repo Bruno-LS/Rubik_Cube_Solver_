@@ -168,4 +168,5 @@ def print_custom_df(df):
         print(f"         |{'|'.join(row)}|")
 
 
-# Nos loc's das funções retirar as redundancias ao virar as faces 
+# print(df.loc[1 ,'Y'])
+# Nos loc's das funções retirar as redundancias nas faces que giram 
