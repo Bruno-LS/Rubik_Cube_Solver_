@@ -3,78 +3,91 @@ import pandas as pd
 from Movimentos_fixos import df
 from Auxiliares_passos import *
 
-def passo_1(cubo:pd.DataFrame):#faltando 2u
+def passo_1(cubo:pd.DataFrame):#faltando o porao
     dicionario = mapear_meios(cubo)        
     
-    i=0
-    for face, indice in dicionario.items():
-        str_face = str(face)
-        if indice == []:
-            continue
-        id = int(indice[0])
-        local = verificar_movimento(cubo, id, str_face)
-        i+=1
-        if id==7 or id == 1:
-            f(cubo, face)
+    itera = iter(dicionario.items())
+    while dicionario:
+        try:
+            face, indice = next(itera)
+            str_face = str(face)
+            if indice == []:
+                continue
+            id = int(indice[0])
+            local = verificar_movimento(cubo, id, str_face)
+            
+            if id==7 or id == 1:
+                f(cubo, str_face)
+                dicionario = mapear_meios(cubo)  
+            elif id==3:
+                if local == -1:
+                    u_linha(cubo)
+                elif local == 0:
+                    u(cubo)
+                elif local == 2:
+                    u(cubo)
+                    u(cubo)
+                else:
+                    l_linha(cubo, str_face)
+            elif id==5:
+                if local == -1:
+                    u(cubo)
+                elif local == 0:
+                    u_linha(cubo)
+                elif local == 2:
+                    u(cubo)
+                    u(cubo)
+                else:
+                    r(cubo, str_face)
             dicionario = mapear_meios(cubo)
-            continue  
-        if id==3:
-            if local == -1:
-                u_linha(cubo)
-            elif local == 0:
-                u(cubo)
-            else:
-                l(cubo, face)
-        if id==5:
-            if local == -1:
-                u(cubo, face)
-            elif local == 0:
-                u_linha(cubo)
-            else:
-                r(cubo, face)
-        dicionario = mapear_meios(cubo)
-    print(i)
-        
+            itera = iter(dicionario.items())
+        except StopIteration:
+            break
+       
+
 
 def passo_2(cubo:pd.DataFrame):
     dicionario = verifica_laranja_topo(cubo)
+    
+    while dicionario:
+        index = dicionario[0]
 
-    for id in dicionario:
-        if id == 1:
+        if index == 1:
             face = 'Y'
             centro_destino = cubo.loc[1 ,'Y'][0]
-        elif id == 3:
+        elif index == 3:
             face = 'B'
             centro_destino = cubo.loc[1 ,'B'][0]
-        elif id == 5:
+        elif index == 5:
             face = 'G'
             centro_destino = cubo.loc[1 ,'G'][0]
-        elif id == 7:
+        elif index == 7:
             face = 'W'
             centro_destino = cubo.loc[1 ,'W'][0]
         direcao = verificar_centro(face, centro_destino)
 
         if direcao == 0:
-            f(cubo, face)
-            f(cubo, face)
+            f(cubo, centro_destino)
+            f(cubo, centro_destino)
         elif direcao == 1:
             u(cubo)
-            f(cubo, face)
-            f(cubo, face)
+            f(cubo, centro_destino)
+            f(cubo, centro_destino)
         elif direcao == 2:
             u(cubo)
             u(cubo)
-            f(cubo, face)
-            f(cubo, face)
-        else:
+            f(cubo, centro_destino)
+            f(cubo, centro_destino)
+        elif direcao == -1:
             u_linha(cubo)
-            f(cubo, face)
-            f(cubo, face)
+            f(cubo, centro_destino)
+            f(cubo, centro_destino)
+      
+        dicionario = verifica_laranja_topo(cubo)
         
 
-def passo_3(cubo:pd.DataFrame):#falta mapear os adjacentes, e saber como será a orientação
+def passo_3(cubo:pd.DataFrame):
     dicionario = mapear_quina(cubo)
-    
     for face, indice in dicionario.items():
         str_face = str(face)
         if indice == []:
@@ -83,13 +96,21 @@ def passo_3(cubo:pd.DataFrame):#falta mapear os adjacentes, e saber como será a
         direcao = verificar_centro(str_face, cubo.loc[id , face][0])
 
         if str_face == 'R':
-            #mapear local da quina na face laranja
-            r(cubo, face)
+            direcao = mapear_quinas_opostas(cubo, id)
+            if direcao == -1:
+                u_linha(cubo)
+            elif direcao == 1:
+                u(cubo)
+            elif direcao == 2:
+                u(cubo)
+                u(cubo)
+
+            r(cubo, str_face)
             u(cubo)
             u(cubo)
-            r_linha(cubo, face)
-            continue  
-        if id < 4:
+            r_linha(cubo, str_face)
+            dicionario = mapear_quina(cubo)        
+        elif id < 4:
             if id == 0:            
                 if direcao == -1:
                     u_linha(cubo)
@@ -99,9 +120,9 @@ def passo_3(cubo:pd.DataFrame):#falta mapear os adjacentes, e saber como será a
                     u(cubo)
                     u(cubo)
                 else:
-                    l_linha(cubo, face)
+                    l_linha(cubo, str_face)
                     u(cubo)
-                    l(cubo, face)
+                    l(cubo, str_face)
             else:
                 if direcao == -1:
                     u_linha(cubo)
@@ -111,10 +132,10 @@ def passo_3(cubo:pd.DataFrame):#falta mapear os adjacentes, e saber como será a
                     u(cubo)
                     u(cubo)
                 else:
-                    r(cubo, face)
+                    r(cubo, str_face)
                     u_linha(cubo)
-                    r_linha(cubo, face)
-        if id > 4:
+                    r_linha(cubo, str_face)
+        elif id > 4:
             if direcao == -1:
                 u_linha(cubo)
             elif direcao == 1:
@@ -123,12 +144,13 @@ def passo_3(cubo:pd.DataFrame):#falta mapear os adjacentes, e saber como será a
                 u(cubo)
                 u(cubo)
             else:
-                r(cubo, face)
+                r(cubo, str_face)
                 u(cubo)
                 u(cubo)
-                r_linha(cubo, face)
+                r_linha(cubo, str_face)
         dicionario = mapear_quina(cubo)
-
+        print(dicionario)
+#houve movimento so errado
 
 def passo_4():
     pass
@@ -154,7 +176,19 @@ def passo_8():
 # caso 6 é bem especifico então tenho q dar uma olhada legal nisso
 
 
-
-
-print("\n\n")
+teste(df)
 print_custom_df(df)
+print("Embaralhado\n\n")
+
+passo_1(df)
+print_custom_df(df)
+print("Passo 1\n\n")
+
+passo_2(df)
+print_custom_df(df)
+print("Passo 2\n\n")
+
+
+passo_3(df)
+print_custom_df(df)
+print("Passo 3\n\n")
