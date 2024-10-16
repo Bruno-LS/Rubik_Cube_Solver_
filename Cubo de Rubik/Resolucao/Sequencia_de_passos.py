@@ -88,69 +88,94 @@ def passo_2(cubo:pd.DataFrame):
 
 def passo_3(cubo:pd.DataFrame):
     dicionario = mapear_quina(cubo)
-    for face, indice in dicionario.items():
-        str_face = str(face)
-        if indice == []:
-            continue
-        id = int(indice[0])
-        direcao = verificar_centro(str_face, cubo.loc[id , face][0])
+    itera = iter(dicionario.items())
+    
+    while dicionario:
+        try:
+            face, indice = next(itera)
+            str_face = str(face)
+            if indice == []:
+                continue
+            id = int(indice[0])    
+            direcao = verificar_centro(str_face, cubo.loc[id , face][0])
+            localizacao = cubo.loc[id , face][0]
 
-        if str_face == 'R':
-            direcao = mapear_quinas_opostas(cubo, id)
-            if direcao == -1:
-                u_linha(cubo)
-            elif direcao == 1:
+            if str_face == 'R':
+                direcao_topo = mapear_quinas_opostas(cubo, id)
+                if direcao_topo == -1:
+                    u_linha(cubo)
+                elif direcao_topo == 1:
+                    u(cubo)
+                elif direcao_topo == 2:
+                    u(cubo)
+                    u(cubo)
+                r(cubo, localizacao)
                 u(cubo)
-            elif direcao == 2:
                 u(cubo)
-                u(cubo)
+                r_linha(cubo, localizacao)        
+            
+            elif id < 4 and str_face !='R':
+                if id == 0:            
+                    if direcao == -1:
+                        u_linha(cubo)
+                    elif direcao == 1:
+                        u(cubo)
+                    elif direcao == 2:
+                        u(cubo)
+                        u(cubo)
+                    l_linha(cubo, localizacao)
+                    u_linha(cubo)
+                    l(cubo, localizacao)
+                elif id == 2:
+                    if direcao == -1:
+                        u_linha(cubo)
+                    elif direcao == 1:
+                        u(cubo)
+                    elif direcao == 2:
+                        u(cubo)
+                        u(cubo)
+                        
+                    r(cubo, localizacao)                                       
+                    u(cubo)                   
+                    r_linha(cubo, localizacao)
 
-            r(cubo, str_face)
-            u(cubo)
-            u(cubo)
-            r_linha(cubo, str_face)
-            dicionario = mapear_quina(cubo)        
-        elif id < 4:
-            if id == 0:            
-                if direcao == -1:
-                    u_linha(cubo)
-                elif direcao == 1:
-                    u(cubo)
-                elif direcao == 2:
-                    u(cubo)
-                    u(cubo)
-                else:
-                    l_linha(cubo, str_face)
-                    u(cubo)
-                    l(cubo, str_face)
-            else:
-                if direcao == -1:
-                    u_linha(cubo)
-                elif direcao == 1:
-                    u(cubo)
-                elif direcao == 2:
+            elif id > 4 and str_face !='R':
+                if id == 6:
+                    if direcao == -1:
+                        d(cubo)
+    
+                    elif direcao == 1:
+                        d_linha(cubo)
+
+                    elif direcao == 2:
+                        d_linha(cubo)
+                        d_linha(cubo)
+                    
+                    f(cubo, localizacao)
                     u(cubo)
                     u(cubo)
-                else:
-                    r(cubo, str_face)
-                    u_linha(cubo)
-                    r_linha(cubo, str_face)
-        elif id > 4:
-            if direcao == -1:
-                u_linha(cubo)
-            elif direcao == 1:
-                u(cubo)
-            elif direcao == 2:
-                u(cubo)
-                u(cubo)
-            else:
-                r(cubo, str_face)
-                u(cubo)
-                u(cubo)
-                r_linha(cubo, str_face)
-        dicionario = mapear_quina(cubo)
-        print(dicionario)
-#houve movimento so errado
+                    f_linha(cubo, localizacao)
+                elif id == 8:
+                    if direcao == -1:
+                        d(cubo)
+    
+                    elif direcao == 1:
+                        d_linha(cubo)
+
+                    elif direcao == 2:
+                        d_linha(cubo)
+                        d_linha(cubo)
+                    
+                    r(cubo, localizacao)
+                    u(cubo)
+                    u(cubo)
+                    r_linha(cubo, localizacao)
+
+            dicionario = mapear_quina(cubo)
+            itera = iter(dicionario.items())
+        except StopIteration:
+            break
+           
 
 def passo_4():
     pass
