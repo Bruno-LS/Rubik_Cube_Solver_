@@ -4,15 +4,15 @@ import pandas as pd
 
 
 def verifica_laranja_topo(cubo:pd.DataFrame):
-    dicionario = []
+    lista = []
     i = 1
     red = cubo['R'].values
     for j in range(i, len(red), 2):
         meio = red[j]
         if meio[0] == "O":
-            dicionario.append(i)
+            lista.append(i)
         i += 2
-    return dicionario
+    return lista
         
 
 def verificar_centro(face_atual, cor):
@@ -75,11 +75,11 @@ def mapear_quina(cubo:pd.DataFrame):
                 if df.iloc[i, df.columns.get_loc(col)][0] == "O":
                     dicionario[col].append(i)
     
-    adjacentes = mapear_adjacentes(dicionario)
+    adjacentes = mapear_adjacentes_quinas(dicionario)
     return adjacentes
 
 
-def mapear_adjacentes(dicionario:dict):
+def mapear_adjacentes_quinas(dicionario:dict):
     adjacentes = {}
     for face, indice in dicionario.items():
         if indice == []:
@@ -268,3 +268,57 @@ def mapear_quinas_opostas(cubo:pd.DataFrame, id:int):
             return 2
         elif cubo.loc[8, 'O'][0] != 'O':
             return -1
+
+
+def verifica_primeira_camada(cubo:pd.DataFrame):
+    for col in cubo.columns:
+        if col not in ['R', 'O']:
+            for i in range(6, len(cubo), 1):
+                if cubo.iloc[i, cubo.columns.get_loc(col)][0] != col:
+                    return [(col, i)]
+    return False
+
+
+def auxiliar_passo4(cubo:pd.DataFrame):
+    for col in cubo.columns:
+        if col not in ['R', 'O']:
+            meio = cubo.iloc[1, cubo.columns.get_loc(col)]
+            if meio not in ['W2', 'B2', 'G2', 'Y2', 'R2', 'R4', 'R6', 'R8']:
+                return {col: meio[0]}
+            else:
+                continue
+    return False
+
+
+def verifica_adjacente_meio(cubo:pd.DataFrame, face:str):
+    if face == 'W':
+        if cubo.iloc[7, df.columns.get_loc('R')][0] == 'B':
+            return 0
+        elif cubo.iloc[7, df.columns.get_loc('R')][0] == 'G':
+            return 1
+    elif face == 'B':
+        if cubo.iloc[3, df.columns.get_loc('R')][0] == 'Y':
+            return 0
+        elif cubo.iloc[3, df.columns.get_loc('R')][0] == 'W':
+            return 1
+    elif face == 'Y':
+        if cubo.iloc[1, df.columns.get_loc('R')][0] == 'G':
+            return 0
+        elif cubo.iloc[1, df.columns.get_loc('R')][0] == 'B':
+            return 1
+    elif face == 'G':
+        if cubo.iloc[5, df.columns.get_loc('R')][0] == 'W':
+            return 0
+        elif cubo.iloc[5, df.columns.get_loc('R')][0] == 'Y':
+            return 1
+    
+
+def verificar_segunda_camada(cubo:pd.DataFrame):
+    for col in cubo.columns:
+        if col not in ['R', 'O']:
+            for i in range(3, 6, 2):
+                if cubo.iloc[i, cubo.columns.get_loc(col)][0] != col:
+                    return [(col, i)]
+    return False
+    
+

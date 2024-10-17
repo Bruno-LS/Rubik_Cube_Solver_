@@ -3,7 +3,7 @@ import pandas as pd
 from Movimentos_fixos import df
 from Auxiliares_passos import *
 
-def passo_1(cubo:pd.DataFrame):#faltando o porao
+def passo_1(cubo:pd.DataFrame):#faltando o porao(opcional)
     dicionario = mapear_meios(cubo)        
     
     itera = iter(dicionario.items())
@@ -44,7 +44,6 @@ def passo_1(cubo:pd.DataFrame):#faltando o porao
         except StopIteration:
             break
        
-
 
 def passo_2(cubo:pd.DataFrame):
     dicionario = verifica_laranja_topo(cubo)
@@ -175,10 +174,86 @@ def passo_3(cubo:pd.DataFrame):
             itera = iter(dicionario.items())
         except StopIteration:
             break
+    if verifica_primeira_camada(cubo) != False:
+        piece = verifica_primeira_camada(cubo)
+        for face, indice in piece:
+            if indice == 6:
+                l_linha(cubo, face)
+                u_linha(cubo)
+                l(cubo, face)
+            elif indice == 8:
+                r(cubo, face)                                       
+                u(cubo)                   
+                r_linha(cubo, face)
+        passo_3(cubo)
            
 
-def passo_4():
-    pass
+def passo_4(cubo:pd.DataFrame):
+    dicionario = auxiliar_passo4(cubo)
+    itera = iter(dicionario.items())
+    if dicionario != False:
+        while dicionario:
+            try:
+                itera = iter(dicionario.items())
+                face_atual, face_destino = next(itera)
+                str_face_atual = str(face_atual)
+                str_face_destino = str(face_destino)
+
+                direcao = verificar_centro(str_face_atual, str_face_destino)
+
+                if direcao == -1:
+                    u_linha(cubo)
+                elif direcao == 1:
+                    u(cubo)
+                elif direcao == 2:
+                    u(cubo)
+                    u(cubo)
+                lado = verifica_adjacente_meio(cubo, str_face_destino)
+                if lado == 0:#Esquerda
+                    u_linha(cubo)
+                    l_linha(cubo, str_face_destino)
+                    u(cubo)
+                    l(cubo, str_face_destino)
+                    u(cubo)
+                    f(cubo, str_face_destino)
+                    u_linha(cubo)
+                    f_linha(cubo, str_face_destino)
+                elif lado == 1:#Direita
+                    u(cubo)
+                    r(cubo, str_face_destino)
+                    u_linha(cubo)
+                    r_linha(cubo, str_face_destino)
+                    u_linha(cubo)
+                    f_linha(cubo, str_face_destino)
+                    u(cubo)
+                    f(cubo, str_face_destino)
+                
+                dicionario = auxiliar_passo4(cubo)
+            except StopIteration:
+                break
+        piece = verificar_segunda_camada(cubo)
+    elif piece != False:
+        face, lado = piece
+        
+        if lado == 3:#Esquerda
+            u_linha(cubo)
+            l_linha(cubo, face)
+            u(cubo)
+            l(cubo, face)
+            u(cubo)
+            f(cubo, face)
+            u_linha(cubo)
+            f_linha(cubo, face)
+        elif lado == 5:#Direita
+            u(cubo)
+            r(cubo, face)
+            u_linha(cubo)
+            r_linha(cubo, face)
+            u_linha(cubo)
+            f_linha(cubo, face)
+            u(cubo)
+            f(cubo, face)
+        passo_4(cubo)
 
 
 def passo_5():
@@ -202,18 +277,23 @@ def passo_8():
 
 
 teste(df)
-print_custom_df(df)
-print("Embaralhado\n\n")
+# print_custom_df(df)
+# print("Embaralhado\n\n")
 
 passo_1(df)
-print_custom_df(df)
-print("Passo 1\n\n")
+# print_custom_df(df)
+# print("Passo 1\n\n")
 
 passo_2(df)
-print_custom_df(df)
-print("Passo 2\n\n")
+# print_custom_df(df)
+# print("Passo 2\n\n")
 
 
 passo_3(df)
+# print_custom_df(df)
+# print("Passo 3\n\n")
+
+
+passo_4(df)
 print_custom_df(df)
-print("Passo 3\n\n")
+print("Passo 4\n\n")
