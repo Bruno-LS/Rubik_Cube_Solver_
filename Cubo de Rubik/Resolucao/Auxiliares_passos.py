@@ -21,7 +21,11 @@ def verificar_centro(face_atual, face_destino):
 
     """
        Recebe a face atual da peça e a face para a qual a peça precisa se locomover.
-       Retorna 0 para nenhum giro, se for movimento horario: 1 para um giro e 2 para dois giros, se for anti-horario: retorna -1
+       Retorna:
+        0 para nenhum giro;
+        1 para um giro;
+        2 para dois giros; 
+        -1 para 1 giro anti-horario.
     """
     faces={
         'B':(1),
@@ -79,7 +83,7 @@ def descobre_centro_por_valor(id:int):
 
 def mapear_quina(cubo:pd.DataFrame, cor='O'):
     """
-        Localiza a {Face:index} das quinas de determinada "cor" = default: 'O'.
+        Localiza a {Face:index} das quinas de determinada Cor.
     """
     dicionario = {}
     for col in cubo.columns:
@@ -425,9 +429,9 @@ def verificar_terceira_camada(cubo:pd.DataFrame, cor):
     dicionario = {}
     for col in cubo.columns:
             if col not in ['R', 'O']:
-                dicionario[col] = []
                 for i in range(0, 3, 1):
                     if cubo.iloc[i, cubo.columns.get_loc(col)][0] == cor:
+                        dicionario[col] = []    
                         dicionario[col].append(i)
     return dicionario
 

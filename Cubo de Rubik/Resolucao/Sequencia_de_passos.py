@@ -299,68 +299,73 @@ def passo_6(cubo:pd.DataFrame):
     faces_horizontais = [item for item in cubo.columns if item not in ['R', 'O']]
 
     diferenca = list(set(faces_horizontais) - set(quinas_iguais))
-    print("w")#colocar um print com a numeração dos casos em cada if de caso
-    if len(vermelhos) == 1:
+    if len(vermelhos) == 1:#casos: 6 e 7
         dicionario = verificar_terceira_camada(cubo, 'R')
-         
-        if all(valor == 2 for valor in dicionario.values()):
-            if vermelhos == 6:
+        
+        if all(all(v == 2 for v in valor) for valor in dicionario.values()):#caso 7
+            
+            if vermelhos[0] == 6:
                 movimentos_passo6(cubo, 'W')
 
-            elif vermelhos == 8:
+            elif vermelhos[0] == 8:
                 u(cubo)
                 movimentos_passo6(cubo, 'W')
 
-            elif vermelhos == 2:
+            elif vermelhos[0] == 2:
                 u(cubo)
                 u(cubo)
                 movimentos_passo6(cubo, 'W')
 
-            elif vermelhos == 0:
+            elif vermelhos[0] == 0:
                 u_linha(cubo)
                 movimentos_passo6(cubo, 'W')
 
-        elif all(valor == 0 for valor in dicionario.values()):
-            if vermelhos == 6:
+        elif all(all(v == 0 for v in valor) for valor in dicionario.values()):#caso 6
+            
+            if vermelhos[0] == 6:
                 movimentos_passo6(cubo, 'W')
                 passo_6(cubo)
 
-            elif vermelhos == 8:
+            elif vermelhos[0] == 8:
                 u(cubo)
                 movimentos_passo6(cubo, 'W')
                 passo_6(cubo)
 
-            elif vermelhos == 2:
+            elif vermelhos[0] == 2:
                 u(cubo)
                 u(cubo)
                 movimentos_passo6(cubo, 'W')
                 passo_6(cubo)
 
-            elif vermelhos == 0:
+            elif vermelhos[0] == 0:
                 u_linha(cubo)
                 movimentos_passo6(cubo, 'W')
                 passo_6(cubo)
 
-    elif len(vermelhos) == 0:
-        if len(quinas_iguais) == 2:
+    elif len(vermelhos) == 0 or vermelhos == []:#casos: 4 e 5
+        if len(quinas_iguais) == 2:#caso 4
+            
             movimentos_passo6(cubo, diferenca[0])
             passo_6(cubo)
 
-        elif len(quinas_iguais) == 1:
+        elif len(quinas_iguais) == 1:#caso 5
+            
             face = Orientar_Face_Direita(quinas_iguais[0])
             movimentos_passo6(cubo, face)
             passo_6(cubo)
 
-    elif len(vermelhos) == 2:
+    elif len(vermelhos) == 2:#casos: 1, 2 e 3
         if len(quinas_iguais) == 1:
-            movimentos_passo6(cubo, diferenca[0])
+            
+            movimentos_passo6(cubo, quinas_iguais[0])
             passo_6(cubo)
 
         elif len(quinas_iguais) == 0 or quinas_iguais == []:
             localizacao = mapear_quina(cubo, 'R')
             chaves = list(localizacao.keys())
            
-            if verificar_centro(chaves[0], chaves[1]) == 2 and localizacao[chaves[0]] - localizacao[chaves[1]] in [-1, 1]:#caso quinas opostas
+            if verificar_centro(chaves[0], chaves[1]) == 2 and localizacao[chaves[0]] - localizacao[chaves[1]] in [-1, 1]:#caso 2
+                
                 if localizacao[chaves[0]] == 0:
                     movimentos_passo6(cubo, chaves[0])
                     passo_6(cubo)
@@ -370,6 +375,7 @@ def passo_6(cubo:pd.DataFrame):
                     passo_6(cubo)
 
             else: #Caso 1: dois opostos pela diagonal
+                
                 if verificar_centro(chaves[0], chaves[1]) == -1:
                     movimentos_passo6(cubo, chaves[0])
                     passo_6(cubo)
@@ -388,7 +394,6 @@ def passo_8():
 
 
 
-# caso 6 é bem especifico então tenho q dar uma olhada legal nisso
 
 
 teste(cubo)
@@ -414,14 +419,14 @@ passo_4(cubo)
 # print("Passo 4\n\n")
 
 passo_5(cubo)
-print_custom_cubo(cubo)
-print("Passo 5\n\n")
+# print_custom_cubo(cubo)
+# print("Passo 5\n\n")
 
 passo_6(cubo)
 print_custom_cubo(cubo)
 print("Passo 6\n\n")
 
-
+# passo_7(cubo)
 # print_custom_cubo(cubo)
 # print("Passo 7\n\n")
 
