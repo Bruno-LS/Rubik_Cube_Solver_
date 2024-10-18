@@ -1,4 +1,4 @@
-from Movimentos_fixos import *
+from Rotacoes_fixas import *
 import pandas as pd
 
 
@@ -179,4 +179,21 @@ def b_linha(cubo:pd.DataFrame, face):
         u_linha(cubo)
 
 
+def movimentos_passo5(cubo:pd.DataFrame):
+    f(cubo, 'W')
+    r(cubo, 'W')
+    u(cubo)
+    r_linha(cubo, 'W')
+    u_linha(cubo)
+    f_linha(cubo, 'W')
 
+
+def movimentos_passo6(cubo:pd.DataFrame, face):
+    r(cubo, face)
+    u(cubo)
+    r_linha(cubo, face)
+    u(cubo)
+    r(cubo, face)
+    u(cubo)
+    u(cubo)
+    r_linha(cubo, face)
