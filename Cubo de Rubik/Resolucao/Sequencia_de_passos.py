@@ -1,6 +1,6 @@
 from Rotacoes import *
 import pandas as pd
-from Movimentos_fixos import df
+from Movimentos_fixos import df as cubo
 from Auxiliares_passos import *
 
 def passo_1(cubo:pd.DataFrame):#faltando o porao(opcional)
@@ -256,12 +256,46 @@ def passo_4(cubo:pd.DataFrame):
         passo_4(cubo)
 
 
-def passo_5():
-    pass
+def passo_5(cubo:pd.DataFrame):
+    
+    vermelhos = contar_vermelhos(cubo)
+    if len(vermelhos) == 3 and [3, 5] in vermelhos:    
+      movimentos_passo5(cubo)
+    elif len(vermelhos) == 3 and [3, 5] not in vermelhos:
+        u(cubo)
+        movimentos_passo5(cubo)
 
+    elif len(vermelhos) == 2 and (1 in vermelhos and 3 in vermelhos):
+        movimentos_passo5(cubo)
+        passo_5(cubo)
 
-def passo_6():
-    pass
+    elif len(vermelhos) == 2 and (1 in vermelhos and 5 in vermelhos):
+        u_linha(cubo)
+        movimentos_passo5(cubo)
+        passo_5(cubo)
+
+    elif len(vermelhos) == 2 and (5 in vermelhos and 7 in vermelhos):
+        u_linha(cubo)
+        u_linha(cubo)
+        movimentos_passo5(cubo)
+        passo_5(cubo)
+
+    elif len(vermelhos) == 2 and (3 in vermelhos and 7 in vermelhos):
+        u(cubo)
+        movimentos_passo5(cubo)
+        passo_5(cubo)
+
+    elif len(vermelhos) == 0 or vermelhos == []:
+        movimentos_passo5(cubo)
+        passo_5(cubo)
+
+ 
+
+def passo_6(cubo:pd.DataFrame):
+    vermelhos = contar_vermelhos(cubo)
+    if len(vermelhos) == 4:
+
+        pass    
 
 
 def passo_7():
@@ -276,24 +310,40 @@ def passo_8():
 # caso 6 é bem especifico então tenho q dar uma olhada legal nisso
 
 
-teste(df)
-# print_custom_df(df)
+teste(cubo)
+# print_custom_cubo(cubo)
 # print("Embaralhado\n\n")
 
-passo_1(df)
-# print_custom_df(df)
+passo_1(cubo)
+# print_custom_cubo(cubo)
 # print("Passo 1\n\n")
 
-passo_2(df)
-# print_custom_df(df)
+passo_2(cubo)
+# print_custom_cubo(cubo)
 # print("Passo 2\n\n")
 
 
-passo_3(df)
-# print_custom_df(df)
+passo_3(cubo)
+# print_custom_cubo(cubo)
 # print("Passo 3\n\n")
 
 
-passo_4(df)
-print_custom_df(df)
-print("Passo 4\n\n")
+passo_4(cubo)
+# print_custom_cubo(cubo)
+# print("Passo 4\n\n")
+
+passo_5(cubo)
+print_custom_cubo(cubo)
+print("Passo 5\n\n")
+
+
+# print_custom_cubo(cubo)
+# print("Passo 6\n\n")
+
+
+# print_custom_cubo(cubo)
+# print("Passo 7\n\n")
+
+
+# print_custom_cubo(cubo)
+# print("Passo 8\n\n")

@@ -141,24 +141,6 @@ def Costas_linha(df:pd.DataFrame):#C
     )
 
 
-def print_custom_df(df):
-    # Separar as colunas por suas respectivas letras
-    rows_R = df["R"].values.reshape(3, 3)
-    rows_O = df["O"].values.reshape(3, 3)
-    rows_b = df["B"].values.reshape(3, 3)
-    rows_w = df["W"].values.reshape(3, 3)
-    rows_g = df["G"].values.reshape(3, 3)
-    rows_y = df["Y"].values.reshape(3, 3)
-
-    rows_main = [list(b) + list(w) + list(g) + list(y) for b, w, g, y in zip(rows_b, rows_w, rows_g, rows_y)]
-
-    # Exibindo as linhas de R, parte central e O
-    for row in rows_R:
-        print(f"         |{'|'.join(row)}|")
-    for row in rows_main:
-        print(f"|{'|'.join(row)}|")
-    for row in rows_O:
-        print(f"         |{'|'.join(row)}|")
 
 
 # Nos loc's das funções retirar as redundancias nas faces que giram 

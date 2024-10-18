@@ -5,13 +5,12 @@ import pandas as pd
 
 def verifica_laranja_topo(cubo:pd.DataFrame):
     lista = []
-    i = 1
     red = cubo['R'].values
-    for j in range(i, len(red), 2):
+    for j in range(1, len(red), 2):
         meio = red[j]
         if meio[0] == "O":
-            lista.append(i)
-        i += 2
+            lista.append(j)
+  
     return lista
         
 
@@ -322,3 +321,42 @@ def verificar_segunda_camada(cubo:pd.DataFrame):
     return False
     
 
+
+def contar_vermelhos(cubo:pd.DataFrame):
+    
+    lista = []
+    red = cubo['R'].values
+    for j in range(1, len(red), 2):
+        meio = red[j]
+        if meio[0] == "R":
+            lista.append(j)
+    return lista
+        
+
+def movimentos_passo5(cubo:pd.DataFrame):
+    f(cubo, 'W')
+    r(cubo, 'W')
+    u(cubo)
+    r_linha(cubo, 'W')
+    u_linha(cubo)
+    f_linha(cubo, 'W')
+
+
+def print_custom_cubo(df):
+    # Separar as colunas por suas respectivas letras
+    rows_R = df["R"].values.reshape(3, 3)
+    rows_O = df["O"].values.reshape(3, 3)
+    rows_b = df["B"].values.reshape(3, 3)
+    rows_w = df["W"].values.reshape(3, 3)
+    rows_g = df["G"].values.reshape(3, 3)
+    rows_y = df["Y"].values.reshape(3, 3)
+
+    rows_main = [list(b) + list(w) + list(g) + list(y) for b, w, g, y in zip(rows_b, rows_w, rows_g, rows_y)]
+
+    # Exibindo as linhas de R, parte central e O
+    for row in rows_R:
+        print(f"         |{'|'.join(row)}|")
+    for row in rows_main:
+        print(f"|{'|'.join(row)}|")
+    for row in rows_O:
+        print(f"         |{'|'.join(row)}|")
