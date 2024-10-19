@@ -297,11 +297,10 @@ def mapear_quinas_opostas(cubo:pd.DataFrame, id:int):
 
 
 def verifica_primeira_camada(cubo:pd.DataFrame):
-    for col in cubo.columns:
-        if col not in ['R', 'O']:
-            for i in range(6, len(cubo), 1):
-                if cubo.iloc[i, cubo.columns.get_loc(col)][0] != col:
-                    return [(col, i)]
+    for col in ['W', 'G', 'B', 'Y']:
+        for i in range(6, len(cubo), 1):
+            if cubo.iloc[i, cubo.columns.get_loc(col)][0] != col:
+                return [(col, i)]
     return False
 
 
@@ -340,11 +339,10 @@ def verifica_adjacente_meio(cubo:pd.DataFrame, face:str):
     
 
 def verificar_segunda_camada(cubo:pd.DataFrame):
-    for col in cubo.columns:
-        if col not in ['R', 'O']:
-            for i in range(3, 6, 2):
-                if cubo.iloc[i, cubo.columns.get_loc(col)][0] != col:
-                    return [(col, i)]
+    for col in ['W', 'G', 'B', 'Y']:
+        for i in range(3, 6, 2):
+            if cubo.iloc[i, cubo.columns.get_loc(col)][0] != col:
+                return [(col, i)]
     return False
     
 
@@ -387,11 +385,10 @@ def procurar_quinas_iguais(cubo:pd.DataFrame, cor):
         Retorna as faces do cubo em que há duas quinas superiores iguais
     """
     face = []
-    for col in cubo.columns:
-        if col not in ['R', 'O']:
-            for piece in cor:
-                if cubo.iloc[0, cubo.columns.get_loc(col)][0] == piece  and cubo.iloc[2, cubo.columns.get_loc(col)][0] == piece:
-                    face.append(col)  
+    for piece in cor:
+        for col in ['W', 'G', 'B', 'Y']:
+            if cubo.iloc[0, cubo.columns.get_loc(col)][0] == piece  and cubo.iloc[2, cubo.columns.get_loc(col)][0] == piece:
+                face.append(col)  
     
     return face 
     
@@ -422,18 +419,36 @@ def Orientar_Face_Esquerda(face):
     return face_orientada    
 
 
-def verificar_terceira_camada(cubo:pd.DataFrame, cor):
+def procurar_Peca(cubo:pd.DataFrame, cor):
     """
         Verifica a primeira linha/terceira camada de todas as faces horizontais e retorna as que possuirem peças da cor selecionada.
     """
     dicionario = {}
-    for col in cubo.columns:
-            if col not in ['R', 'O']:
-                for i in range(0, 3, 1):
-                    if cubo.iloc[i, cubo.columns.get_loc(col)][0] == cor:
-                        dicionario[col] = []    
-                        dicionario[col].append(i)
+    for col in ['W', 'G', 'B', 'Y']:
+        for i in range(0, 3, 1):
+            if cubo.iloc[i, cubo.columns.get_loc(col)][0] == cor:
+                dicionario[col] = []    
+                dicionario[col].append(i)
     return dicionario
+
+
+def verificar_terceira_camada(cubo:pd.DataFrame):
+    """
+        Verifica se todos as peças da primeira linha são iguais e pertencentes ao centro em questão e retorna o centro
+    """
+    for col in ['W', 'G', 'B', 'Y']:
+        if cubo.iloc[0, cubo.columns.get_loc(col)][0] == col and cubo.iloc[1, cubo.columns.get_loc(col)][0] == col and cubo.iloc[2, cubo.columns.get_loc(col)][0] == col:
+            return col
+    return False
+    
+
+def Face_oposta(face):
+    """
+        Recebe uma face e retorna sua oposta
+    """
+    mapa = {'W': 'Y', 'B': 'G', 'R': 'O', 'Y': 'W', 'G': 'B', 'O': 'R'}
+    return mapa.get(face)
+
 
 #Ideia: Criar uma função que receba a localização de duas peças:{Face:index} e o lado, em relação a face Branca, e determine se estão na mesma coluna de giro(lado)
 #Ideia: Função para determinar se duas peças são opostas 

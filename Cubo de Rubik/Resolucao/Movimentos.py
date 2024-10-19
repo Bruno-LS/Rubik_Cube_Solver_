@@ -197,3 +197,28 @@ def movimentos_passo6(cubo:pd.DataFrame, face):
     u(cubo)
     u(cubo)
     r_linha(cubo, face)
+
+
+def movimentos_passo8(cubo:pd.DataFrame, face, lado):
+    if lado == 1:
+        u(cubo)
+        l(cubo, face)
+        r_linha(cubo, face)
+        f(cubo, face)
+        f(cubo, face)
+        l_linha(cubo, face)
+        r(cubo, face)
+        u(cubo)
+        f(cubo, face)
+        f(cubo, face)
+    elif lado == -1:
+        u_linha(cubo)
+        r_linha(cubo, face)
+        l(cubo, face)
+        f(cubo, face)
+        f(cubo, face)
+        l_linha(cubo, face)
+        r(cubo, face)
+        u_linha(cubo)
+        f(cubo, face)
+        f(cubo, face)

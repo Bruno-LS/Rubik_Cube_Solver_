@@ -292,7 +292,6 @@ def passo_5(cubo:pd.DataFrame):
         passo_5(cubo)
 
  
-
 def passo_6(cubo:pd.DataFrame):
     vermelhos = contar_vermelhos(cubo)
     quinas_iguais = procurar_quinas_iguais(cubo, 'R')
@@ -300,7 +299,7 @@ def passo_6(cubo:pd.DataFrame):
 
     diferenca = list(set(faces_horizontais) - set(quinas_iguais))
     if len(vermelhos) == 1:#casos: 6 e 7
-        dicionario = verificar_terceira_camada(cubo, 'R')
+        dicionario = procurar_Peca(cubo, 'R')
         
         if all(all(v == 2 for v in valor) for valor in dicionario.values()):#caso 7
             
@@ -385,13 +384,68 @@ def passo_6(cubo:pd.DataFrame):
                     passo_6(cubo)
 
 
-def passo_7():
-    pass
+def passo_7(cubo:pd.DataFrame):
+    quinas = procurar_quinas_iguais(cubo, ['W', 'G', 'B', 'Y'])
+    if len(quinas) >= 1:
+        face = quinas[0]
+        r(cubo, face)
+        b_linha(cubo, face)
+        r(cubo, face)
+        f(cubo, face)
+        f(cubo, face)
+        r_linha(cubo, face)
+        b(cubo, face)
+        r(cubo, face)
+        f(cubo, face)
+        f(cubo, face)
+        r(cubo, face)
+        r(cubo, face)
+    elif len(quinas) == 0 or quinas == []:
+        face = 'W'
+        r(cubo, face)
+        b_linha(cubo, face)
+        r(cubo, face)
+        f(cubo, face)
+        f(cubo, face)
+        r_linha(cubo, face)
+        b(cubo, face)
+        r(cubo, face)
+        f(cubo, face)
+        f(cubo, face)
+        r(cubo, face)
+        r(cubo, face)
+        passo_7(cubo)
 
 
-def passo_8():
-    pass
+def passo_8(cubo:pd.DataFrame):
+    #mover terceira camada para os devidos centros com base no indice 0
+    direcao = verificar_centro('W', cubo.iloc[0, cubo.columns.get_loc('W')][0])
+    if direcao == -1:
+        u_linha(cubo)
+    elif direcao == 1:
+        u(cubo)
+    elif direcao == 2:
+        u(cubo)
+        u(cubo)
 
+    face_traseira = verificar_terceira_camada(cubo)
+    if verifica_primeira_camada(cubo) == False and verificar_segunda_camada(cubo) == False and face_traseira != False:
+        face = Face_oposta(face_traseira)
+        meio = cubo.iloc[1, cubo.columns.get_loc(face)][0]
+        lista = procurar_Peca(cubo, meio)
+        face_cm_peca = str(next(iter(lista.keys())))
+        
+        f(cubo, face)
+        f(cubo, face)
+        movimentos_passo8(cubo, face, verificar_centro(face, face_cm_peca))
+    else:
+        face = 'W'
+        f(cubo, face)
+        f(cubo, face)
+        lista = procurar_Peca(cubo, face)
+        face_cm_peca = str(lista.keys())
+        movimentos_passo8(cubo, face, verificar_centro(face, face_cm_peca))
+        passo_8(cubo)
 
 
 
@@ -423,13 +477,13 @@ passo_5(cubo)
 # print("Passo 5\n\n")
 
 passo_6(cubo)
+# print_custom_cubo(cubo)
+# print("Passo 6\n\n")
+
+passo_7(cubo)
 print_custom_cubo(cubo)
-print("Passo 6\n\n")
+print("Passo 7\n\n")
 
-# passo_7(cubo)
-# print_custom_cubo(cubo)
-# print("Passo 7\n\n")
-
-
-# print_custom_cubo(cubo)
-# print("Passo 8\n\n")
+passo_8(cubo)
+print_custom_cubo(cubo)
+print("Passo 8\n\n")
