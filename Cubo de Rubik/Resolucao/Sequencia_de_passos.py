@@ -1,9 +1,9 @@
-from Movimentos import *
+from Movimentacoes.Movimentos import *
+from Movimentacoes.Rotacoes_fixas import df as cubo
 import pandas as pd
-from Rotacoes_fixas import df as cubo
 from Auxiliares_passos import *
 
-def passo_1(cubo:pd.DataFrame):#faltando o porao(opcional)
+def passo_1(cubo:pd.DataFrame):
     dicionario = mapear_meios(cubo)        
     
     itera = iter(dicionario.items())
@@ -18,7 +18,10 @@ def passo_1(cubo:pd.DataFrame):#faltando o porao(opcional)
             
             if id==7 or id == 1:
                 f(cubo, str_face)
-                dicionario = mapear_meios(cubo)  
+                dicionario = mapear_meios(cubo)
+                itera = iter(dicionario.items())
+                continue
+
             elif id==3:
                 if local == -1:
                     u_linha(cubo)
@@ -27,8 +30,8 @@ def passo_1(cubo:pd.DataFrame):#faltando o porao(opcional)
                 elif local == 2:
                     u(cubo)
                     u(cubo)
-                else:
-                    l_linha(cubo, str_face)
+                
+                l_linha(cubo, str_face)
             elif id==5:
                 if local == -1:
                     u(cubo)
@@ -37,13 +40,12 @@ def passo_1(cubo:pd.DataFrame):#faltando o porao(opcional)
                 elif local == 2:
                     u(cubo)
                     u(cubo)
-                else:
-                    r(cubo, str_face)
+                r(cubo, str_face)
             dicionario = mapear_meios(cubo)
             itera = iter(dicionario.items())
         except StopIteration:
             break
-       
+
 
 def passo_2(cubo:pd.DataFrame):
     dicionario = verifica_laranja_topo(cubo)
@@ -89,7 +91,7 @@ def passo_3(cubo:pd.DataFrame):
     dicionario = mapear_quina(cubo)
     adjacentes = mapear_adjacentes_quinas(dicionario) 
     itera = iter(adjacentes.items())
-    
+    print(2)
     while adjacentes:
         try:
             face, indice = next(itera)
@@ -101,14 +103,9 @@ def passo_3(cubo:pd.DataFrame):
             localizacao = cubo.loc[id , face][0]
 
             if str_face == 'R':
-                direcao_topo = mapear_quinas_opostas(cubo, id)
-                if direcao_topo == -1:
-                    u_linha(cubo)
-                elif direcao_topo == 1:
-                    u(cubo)
-                elif direcao_topo == 2:
-                    u(cubo)
-                    u(cubo)
+                direcao_topo = mapear_quinas_opostas_vertical(cubo, id)
+                girar_u(direcao_topo, cubo)
+
                 r(cubo, localizacao)
                 u(cubo)
                 u(cubo)
@@ -116,24 +113,13 @@ def passo_3(cubo:pd.DataFrame):
             
             elif id < 4 and str_face !='R':
                 if id == 0:            
-                    if direcao == -1:
-                        u_linha(cubo)
-                    elif direcao == 1:
-                        u(cubo)
-                    elif direcao == 2:
-                        u(cubo)
-                        u(cubo)
+                    girar_u(direcao, cubo)
+
                     l_linha(cubo, localizacao)
                     u_linha(cubo)
                     l(cubo, localizacao)
                 elif id == 2:
-                    if direcao == -1:
-                        u_linha(cubo)
-                    elif direcao == 1:
-                        u(cubo)
-                    elif direcao == 2:
-                        u(cubo)
-                        u(cubo)
+                    girar_u(direcao, cubo)
                         
                     r(cubo, localizacao)                                       
                     u(cubo)                   
@@ -141,30 +127,14 @@ def passo_3(cubo:pd.DataFrame):
 
             elif id > 4 and str_face !='R':
                 if id == 6:
-                    if direcao == -1:
-                        d(cubo)
-    
-                    elif direcao == 1:
-                        d_linha(cubo)
-
-                    elif direcao == 2:
-                        d_linha(cubo)
-                        d_linha(cubo)
+                    girar_d(direcao, cubo)
                     
                     f(cubo, localizacao)
                     u(cubo)
                     u(cubo)
                     f_linha(cubo, localizacao)
                 elif id == 8:
-                    if direcao == -1:
-                        d(cubo)
-    
-                    elif direcao == 1:
-                        d_linha(cubo)
-
-                    elif direcao == 2:
-                        d_linha(cubo)
-                        d_linha(cubo)
+                    girar_d(direcao, cubo)
                     
                     r(cubo, localizacao)
                     u(cubo)
@@ -203,13 +173,8 @@ def passo_4(cubo:pd.DataFrame):
 
                 direcao = verificar_centro(str_face_atual, str_face_destino)
 
-                if direcao == -1:
-                    u_linha(cubo)
-                elif direcao == 1:
-                    u(cubo)
-                elif direcao == 2:
-                    u(cubo)
-                    u(cubo)
+                girar_u(direcao, cubo)
+
                 lado = verifica_adjacente_meio(cubo, str_face_destino)
                 if lado == 0:#Esquerda
                     u_linha(cubo)
@@ -451,34 +416,34 @@ def passo_8(cubo:pd.DataFrame):
 
 
 teste(cubo)
-# print_custom_cubo(cubo)
-# print("Embaralhado\n\n")
+print_custom_cubo(cubo)
+print("Embaralhado\n\n")
 
-passo_1(cubo)
-# print_custom_cubo(cubo)
-# print("Passo 1\n\n")
+i = passo_1(cubo)
+print_custom_cubo(cubo)
+print("Passo 1: \n\n", i)
 
 passo_2(cubo)
-# print_custom_cubo(cubo)
-# print("Passo 2\n\n")
+print_custom_cubo(cubo)
+print("Passo 2\n\n")
 
 
 passo_3(cubo)
-# print_custom_cubo(cubo)
-# print("Passo 3\n\n")
+print_custom_cubo(cubo)
+print("Passo 3\n\n")
 
 
 passo_4(cubo)
-# print_custom_cubo(cubo)
-# print("Passo 4\n\n")
+print_custom_cubo(cubo)
+print("Passo 4\n\n")
 
 passo_5(cubo)
-# print_custom_cubo(cubo)
-# print("Passo 5\n\n")
+print_custom_cubo(cubo)
+print("Passo 5\n\n")
 
 passo_6(cubo)
-# print_custom_cubo(cubo)
-# print("Passo 6\n\n")
+print_custom_cubo(cubo)
+print("Passo 6\n\n")
 
 passo_7(cubo)
 print_custom_cubo(cubo)
@@ -487,3 +452,5 @@ print("Passo 7\n\n")
 passo_8(cubo)
 print_custom_cubo(cubo)
 print("Passo 8\n\n")
+
+

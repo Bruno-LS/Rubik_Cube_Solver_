@@ -1,4 +1,4 @@
-from Movimentos import *
+from Movimentacoes.Movimentos import *
 import pandas as pd
 
 
@@ -10,8 +10,7 @@ def verifica_laranja_topo(cubo:pd.DataFrame):
     lista = []
     red = cubo['R'].values
     for j in range(1, len(red), 2):
-        meio = red[j]
-        if meio[0] == "O":
+        if red[j][0] == "O":
             lista.append(j)
   
     return lista
@@ -22,10 +21,10 @@ def verificar_centro(face_atual, face_destino):
     """
        Recebe a face atual da peça e a face para a qual a peça precisa se locomover.
        Retorna:
-        0 para nenhum giro;
-        1 para um giro;
-        2 para dois giros; 
-        -1 para 1 giro anti-horario.
+        0 nenhum giro;
+        1 um giro;
+        2 dois giros; 
+        -1 giro anti-horario.
     """
     faces={
         'B':(1),
@@ -49,9 +48,129 @@ def verificar_centro(face_atual, face_destino):
         return 0
 
 
+def verifica_adjacente_meio(cubo:pd.DataFrame, face:str):
+    """
+        Verifica se o adjacente do meio superior da face oferecida é da face adjacente esquerda ou direita
+        0: Esquerda
+        1: Direita 
+    """
+    if face == 'W':
+        if cubo.iloc[7, df.columns.get_loc('R')][0] == 'B':
+            return 0
+        elif cubo.iloc[7, df.columns.get_loc('R')][0] == 'G':
+            return 1
+    elif face == 'B':
+        if cubo.iloc[3, df.columns.get_loc('R')][0] == 'Y':
+            return 0
+        elif cubo.iloc[3, df.columns.get_loc('R')][0] == 'W':
+            return 1
+    elif face == 'Y':
+        if cubo.iloc[1, df.columns.get_loc('R')][0] == 'G':
+            return 0
+        elif cubo.iloc[1, df.columns.get_loc('R')][0] == 'B':
+            return 1
+    elif face == 'G':
+        if cubo.iloc[5, df.columns.get_loc('R')][0] == 'W':
+            return 0
+        elif cubo.iloc[5, df.columns.get_loc('R')][0] == 'Y':
+            return 1
+ 
+
+def verifica_primeira_camada(cubo:pd.DataFrame):
+    """
+        Verifica se na primeira camada todas as peças são da cor do centro, ou seja, verifica se as peças estão no devido lugar, retorna a Coluna:Index da peça errada
+    """
+    for col in ['W', 'G', 'B', 'Y']:
+        for i in range(6, len(cubo), 1):
+            if cubo.iloc[i, cubo.columns.get_loc(col)][0] != col:
+                return [(col, i)]
+    return False
+
+
+def verificar_segunda_camada(cubo:pd.DataFrame):
+    """
+        Verifica se na segunda camada todas as peças são da cor do centro, ou seja, verifica se as peças estão no devido lugar, retorna a Coluna:Index da peça errada
+    """
+    for col in ['W', 'G', 'B', 'Y']:
+        for i in range(3, 6, 2):
+            if cubo.iloc[i, cubo.columns.get_loc(col)][0] != col:
+                return [(col, i)]
+    return False
+
+
+def verificar_terceira_camada(cubo:pd.DataFrame):
+    """
+        Verifica se todos as peças da primeira linha são iguais e pertencentes ao centro em questão e retorna o centro
+    """
+    for col in ['W', 'G', 'B', 'Y']:
+        if cubo.iloc[0, cubo.columns.get_loc(col)][0] == col and cubo.iloc[1, cubo.columns.get_loc(col)][0] == col and cubo.iloc[2, cubo.columns.get_loc(col)][0] == col:
+            return col
+    return False
+
+
+def verificar_movimento(cubo:pd.DataFrame, id:int, face:str):
+    #poderá ser trocada pela função de "procurar peças no 'lado'"
+    """
+        Verifica se na face vermelha no movimento de L' ou R de uma peça laranja nas faces horizontais, há alguma peça laranja na mesma linha e retorna o movimento de giro nescessário 
+    """
+    if id == 3:
+        if face == 'Y' and cubo.loc[5, 'R'][0] == "O":
+            if cubo.loc[1, 'R'][0] == "O":
+                if cubo.loc[7, 'R'][0] == "O":
+                    return 2
+                return -1
+            return 0
+        elif face == 'B' and cubo.loc[1, 'R'][0] == "O":
+            if cubo.loc[3, 'R'][0] == "O":
+                if cubo.loc[5, 'R'][0] == "O":
+                    return 2
+                return -1
+            return 0
+        elif face == 'G' and cubo.loc[7, 'R'][0] == "O":
+            if cubo.loc[5, 'R'][0] == "O":
+                if cubo.loc[3, 'R'][0] == "O":
+                    return 2
+                return -1
+            return 0
+        elif face == 'W' and cubo.loc[3, 'R'][0] == "O":
+            if cubo.loc[7, 'R'][0] == "O":
+                if cubo.loc[1, 'R'][0] == "O":
+                    return 2
+                return -1
+            return 0
+        return 1
+    
+    if id == 5:
+        if face == 'Y' and cubo.loc[3, 'R'][0] == "O":
+            if cubo.loc[1, 'R'][0] == "O":
+                if cubo.loc[7, 'R'][0] == "O":
+                    return 2
+                return -1
+            return 0
+        elif face == 'B' and cubo.loc[7, 'R'][0] == "O":
+            if cubo.loc[3, 'R'][0] == "O":
+                if cubo.loc[5, 'R'][0] == "O":
+                    return 2
+                return -1
+            return 0
+        elif face == 'G' and cubo.loc[1, 'R'][0] == "O":
+            if cubo.loc[5, 'R'][0] == "O":
+                if cubo.loc[3, 'R'][0] == "O":
+                    return 2
+                return -1
+            return 0
+        elif face == 'W' and cubo.loc[5, 'R'][0] == "O":
+            if cubo.loc[7, 'R'][0] == "O":
+                if cubo.loc[1, 'R'][0] == "O":
+                    return 2
+                return -1
+            return 0
+        return 1
+
+
 def descobre_valor_por_centro(face:str):
     """
-        Recebe um str entre [B, W, G, Y, R, O] e retorna O número que representa esta face.
+        Recebe um str entre [B, W, G, Y, R, O] e retorna o número que representa esta face.
     """
     faces={
         'B':(1),
@@ -86,20 +205,19 @@ def mapear_quina(cubo:pd.DataFrame, cor='O'):
         Localiza a {Face:index} das quinas de determinada Cor.
     """
     dicionario = {}
-    for col in cubo.columns:
-        if col not in ['O']:
-            dicionario[col] = []
-            for i in range(0, len(cubo), 2):
-                if cubo.iloc[i, cubo.columns.get_loc(col)][0] == cor:
-                    dicionario[col].append(i)
+    for col in ['W', 'R', 'G', 'B', 'Y']:
+        dicionario[col] = []
+        for i in range(0, len(cubo), 2):
+            
+            if cubo.iloc[i, cubo.columns.get_loc(col)][0] == cor:
+                dicionario[col].append(i)
     
     return dicionario
 
 
 def mapear_adjacentes_quinas(dicionario:dict):
     """
-        Localiza a {Face:Index} dos adjacentes laterais das quinas no cubo.
-        Adjacente Lateral: Todo adjacente que não estiver tanto no topo quanto na base do cubo.
+        Localiza a {Face:Index} dos adjacentes laterais e do topo das quinas no cubo.
     """
     adjacentes = {}
     for face, indice in dicionario.items():
@@ -147,73 +265,16 @@ def mapear_adjacentes_quinas(dicionario:dict):
 
 def mapear_meios(cubo:pd.DataFrame):
     """
-        Verificar nos indices 3, 5 primeiro e depois na face O nos indices impares e depois nos indices 1 e 7 das faces W, G, Y, B.
+        Verifica dos meios das faces laterais quais possuem a cor laranja
     """
     dicionario = {}
-    for col in cubo.columns:
-        if col not in ['R', 'O']:
-            dicionario[col] = []
-            for i in range(1, len(cubo), 2):
-                if cubo.iloc[i, cubo.columns.get_loc(col)][0] == "O":
-                    dicionario[col].append(i)
+    for col in ['W', 'G', 'B', 'Y']:
+        dicionario[col] = []
+        for i in range(1, len(cubo), 2):
+            if cubo.iloc[i, cubo.columns.get_loc(col)][0] == "O":
+                dicionario[col].append(i)
     
     return dicionario
-
-
-def verificar_movimento(cubo:pd.DataFrame, id:int, face:str):
-    if id == 3:
-        if face == 'Y' and cubo.loc[5, 'R'][0] == "O":
-            if cubo.loc[1, 'R'][0] == "O":
-                return -1
-            elif cubo.loc[7, 'R'][0] == "O":
-                return 2
-            return 0
-        elif face == 'B' and cubo.loc[1, 'R'][0] == "O":
-            if cubo.loc[3, 'R'][0] == "O":
-                return -1
-            elif cubo.loc[5, 'R'][0] == "O":
-                return 2
-            return 0
-        elif face == 'G' and cubo.loc[7, 'R'][0] == "O":
-            if cubo.loc[5, 'R'][0] == "O":
-                return -1
-            elif cubo.loc[3, 'R'][0] == "O":
-                return 2
-            return 0
-        elif face == 'W' and cubo.loc[3, 'R'][0] == "O":
-            if cubo.loc[7, 'R'][0] == "O":
-                return -1
-            elif cubo.loc[1, 'R'][0] == "O":
-                return 2
-            return 0
-        return 1
-    
-    if id == 5:
-        if face == 'Y' and cubo.loc[3, 'R'][0] == "O":
-            if cubo.loc[1, 'R'][0] == "O":
-                return -1
-            elif cubo.loc[7, 'R'][0] == "O":
-                return 2
-            return 0
-        elif face == 'B' and cubo.loc[7, 'R'][0] == "O":
-            if cubo.loc[3, 'R'][0] == "O":
-                return -1
-            elif cubo.loc[5, 'R'][0] == "O":
-                return 2
-            return 0
-        elif face == 'G' and cubo.loc[1, 'R'][0] == "O":
-            if cubo.loc[5, 'R'][0] == "O":
-                return -1
-            elif cubo.loc[3, 'R'][0] == "O":
-                return 2
-            return 0
-        elif face == 'W' and cubo.loc[5, 'R'][0] == "O":
-            if cubo.loc[7, 'R'][0] == "O":
-                return -1
-            elif cubo.loc[1, 'R'][0] == "O":
-                return 2
-            return 0
-        return 1 
 
 
 def teste(cubo:pd.DataFrame):
@@ -251,7 +312,7 @@ def teste(cubo:pd.DataFrame):
     d_linha(cubo)
 
 
-def mapear_quinas_opostas(cubo:pd.DataFrame, id:int):
+def mapear_quinas_opostas_vertical(cubo:pd.DataFrame, id:int):
     """
         Recebe o indice de uma quina laranja na face Vermelha e mapeia se a quina espacialmente oposta à ela na face laranja é ou não laranja também.
     """
@@ -296,59 +357,22 @@ def mapear_quinas_opostas(cubo:pd.DataFrame, id:int):
             return -1
 
 
-def verifica_primeira_camada(cubo:pd.DataFrame):
-    for col in ['W', 'G', 'B', 'Y']:
-        for i in range(6, len(cubo), 1):
-            if cubo.iloc[i, cubo.columns.get_loc(col)][0] != col:
-                return [(col, i)]
-    return False
-
-
 def auxiliar_passo4(cubo:pd.DataFrame):
-    for col in cubo.columns:
-        if col not in ['R', 'O']:
-            meio = cubo.iloc[1, cubo.columns.get_loc(col)]
-            if meio not in ['W2', 'B2', 'G2', 'Y2', 'R2', 'R4', 'R6', 'R8']:
-                return {col: meio[0]}
-            else:
-                continue
-    return False
-
-
-def verifica_adjacente_meio(cubo:pd.DataFrame, face:str):
-    if face == 'W':
-        if cubo.iloc[7, df.columns.get_loc('R')][0] == 'B':
-            return 0
-        elif cubo.iloc[7, df.columns.get_loc('R')][0] == 'G':
-            return 1
-    elif face == 'B':
-        if cubo.iloc[3, df.columns.get_loc('R')][0] == 'Y':
-            return 0
-        elif cubo.iloc[3, df.columns.get_loc('R')][0] == 'W':
-            return 1
-    elif face == 'Y':
-        if cubo.iloc[1, df.columns.get_loc('R')][0] == 'G':
-            return 0
-        elif cubo.iloc[1, df.columns.get_loc('R')][0] == 'B':
-            return 1
-    elif face == 'G':
-        if cubo.iloc[5, df.columns.get_loc('R')][0] == 'W':
-            return 0
-        elif cubo.iloc[5, df.columns.get_loc('R')][0] == 'Y':
-            return 1
-    
-
-def verificar_segunda_camada(cubo:pd.DataFrame):
+    """
+        Verifica se algum dos meios superiores das faces laterais, possui um adjacente vermelho em cima e retorna a coluna: face, desta peça
+    """
     for col in ['W', 'G', 'B', 'Y']:
-        for i in range(3, 6, 2):
-            if cubo.iloc[i, cubo.columns.get_loc(col)][0] != col:
-                return [(col, i)]
+        meio = cubo.iloc[1, cubo.columns.get_loc(col)]
+        if meio not in ['W2', 'B2', 'G2', 'Y2', 'R2', 'R4', 'R6', 'R8']:
+            return {col: meio[0]}
+        else:
+            continue
     return False
-    
+       
 
 def contar_vermelhos(cubo:pd.DataFrame):
     """
-        Contar quantas quinas vermelhas estão na face vermelha
+        Conta quantas quinas vermelhas estão na face vermelha
     """
     lista = []
     red = cubo['R'].values
@@ -361,6 +385,12 @@ def contar_vermelhos(cubo:pd.DataFrame):
         
 
 def print_custom_cubo(cubo):
+    """
+        Printa o dataframe do cubo, num formato planificado do tipo
+         R
+        B W G Y
+         O
+    """
     # Separar as colunas por suas respectivas letras
     rows_R = cubo["R"].values.reshape(3, 3)
     rows_O = cubo["O"].values.reshape(3, 3)
@@ -394,6 +424,9 @@ def procurar_quinas_iguais(cubo:pd.DataFrame, cor):
     
 
 def Orientar_Face_Direita(face):
+    """
+        Recebe uma face e retorna a face que vista de frente faça com que a primeira fique disposta à sua direita
+    """
     if face == 'W':
         face_orientada = 'B'
     elif face == 'G':
@@ -407,6 +440,9 @@ def Orientar_Face_Direita(face):
 
 
 def Orientar_Face_Esquerda(face):
+    """
+        Recebe uma face e retorna a face que vista de frente faça com que a primeira fique disposta à sua esquerda
+    """
     if face == 'W':
         face_orientada = 'G'
     elif face == 'G':
@@ -430,16 +466,6 @@ def procurar_Peca(cubo:pd.DataFrame, cor):
                 dicionario[col] = []    
                 dicionario[col].append(i)
     return dicionario
-
-
-def verificar_terceira_camada(cubo:pd.DataFrame):
-    """
-        Verifica se todos as peças da primeira linha são iguais e pertencentes ao centro em questão e retorna o centro
-    """
-    for col in ['W', 'G', 'B', 'Y']:
-        if cubo.iloc[0, cubo.columns.get_loc(col)][0] == col and cubo.iloc[1, cubo.columns.get_loc(col)][0] == col and cubo.iloc[2, cubo.columns.get_loc(col)][0] == col:
-            return col
-    return False
     
 
 def Face_oposta(face):
@@ -450,5 +476,49 @@ def Face_oposta(face):
     return mapa.get(face)
 
 
+def leitura(lista, cubo:pd.DataFrame):
+    """
+        Lê uma lista de movimentos com a seguinte estrutura 'Movimento':'Face' e executa os movimentos da lista
+    """
+    rotacao = {
+        'r' :r,
+        'r_':r_linha, 
+        'l':l,
+        'l_':l_linha,
+        'f':f,
+        'f_':f_linha,
+        'b':b,
+        'b_':b_linha,
+        'd':d,
+        'd_':d_linha,
+        'u':u,
+        'u_':u_linha
+    }
+    for movimento_face in lista:
+       face = movimento_face[2]
+       movimento = movimento_face[0]
+       rotacao[movimento](cubo, face)
+
+
+def girar_u(direcao, cubo:pd.DataFrame):
+    if direcao == -1:
+        u_linha(cubo)
+    elif direcao == 1:
+        u(cubo)
+    elif direcao == 2:
+        u(cubo)
+        u(cubo)
+
+
+def girar_d(direcao, cubo:pd.DataFrame):
+    if direcao == -1:
+        d(cubo)
+
+    elif direcao == 1:
+        d_linha(cubo)
+
+    elif direcao == 2:
+        d_linha(cubo)
+        d_linha(cubo)   
 #Ideia: Criar uma função que receba a localização de duas peças:{Face:index} e o lado, em relação a face Branca, e determine se estão na mesma coluna de giro(lado)
 #Ideia: Função para determinar se duas peças são opostas 
