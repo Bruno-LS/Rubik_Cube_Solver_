@@ -1,6 +1,5 @@
-from Movimentacoes.Rotacoes_fixas import *
-import pandas as pd
-
+# from Resolucao.Movimentacoes_fixas.Rotacoes_fixas import *
+from .Movimentacoes_fixas.Rotacoes_fixas import *
 
 
 def r(cubo:pd.DataFrame, face:str):
@@ -190,50 +189,3 @@ def b_linha(cubo:pd.DataFrame, face):
     }
     movimento[face](cubo)
     
-
-def movimentos_passo5(cubo:pd.DataFrame):
-    f(cubo, 'W')
-    r(cubo, 'W')
-    u(cubo)
-    r_linha(cubo, 'W')
-    u_linha(cubo)
-    f_linha(cubo, 'W')
-
-
-def movimentos_passo6(cubo:pd.DataFrame, face):
-    r(cubo, face)
-    u(cubo)
-    r_linha(cubo, face)
-    u(cubo)
-    r(cubo, face)
-    u(cubo)
-    u(cubo)
-    r_linha(cubo, face)
-
-
-def movimentos_passo8(cubo:pd.DataFrame, face, lado):
-    if lado == 1:
-        u(cubo)
-        l(cubo, face)
-        r_linha(cubo, face)
-        f(cubo, face)
-        f(cubo, face)
-        l_linha(cubo, face)
-        r(cubo, face)
-        u(cubo)
-        f(cubo, face)
-        f(cubo, face)
-    elif lado == -1:
-        u_linha(cubo)
-        r_linha(cubo, face)
-        l(cubo, face)
-        f(cubo, face)
-        f(cubo, face)
-        l_linha(cubo, face)
-        r(cubo, face)
-        u_linha(cubo)
-        f(cubo, face)
-        f(cubo, face)
-
-
-

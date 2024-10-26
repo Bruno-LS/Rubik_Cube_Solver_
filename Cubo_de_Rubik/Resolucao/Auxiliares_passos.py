@@ -1,5 +1,4 @@
-from Movimentacoes.Movimentos import *
-import pandas as pd
+from .Movimentos import r, r_linha, l, l_linha, f, f_linha, b, b_linha, u, u_linha, d, d_linha, pd
 
 
 
@@ -50,29 +49,29 @@ def verificar_centro(face_atual, face_destino):
 
 def verifica_adjacente_meio(cubo:pd.DataFrame, face:str):
     """
-        Verifica se o adjacente do meio superior da face oferecida é da face adjacente esquerda ou direita
+        Verifica se a cor adjacente do meio na terceira camada da face oferecida, é da face adjacente esquerda ou direita
         0: Esquerda
         1: Direita 
     """
     if face == 'W':
-        if cubo.iloc[7, df.columns.get_loc('R')][0] == 'B':
+        if cubo.iloc[7, cubo.columns.get_loc('R')][0] == 'B':
             return 0
-        elif cubo.iloc[7, df.columns.get_loc('R')][0] == 'G':
+        elif cubo.iloc[7, cubo.columns.get_loc('R')][0] == 'G':
             return 1
     elif face == 'B':
-        if cubo.iloc[3, df.columns.get_loc('R')][0] == 'Y':
+        if cubo.iloc[3, cubo.columns.get_loc('R')][0] == 'Y':
             return 0
-        elif cubo.iloc[3, df.columns.get_loc('R')][0] == 'W':
+        elif cubo.iloc[3, cubo.columns.get_loc('R')][0] == 'W':
             return 1
     elif face == 'Y':
-        if cubo.iloc[1, df.columns.get_loc('R')][0] == 'G':
+        if cubo.iloc[1, cubo.columns.get_loc('R')][0] == 'G':
             return 0
-        elif cubo.iloc[1, df.columns.get_loc('R')][0] == 'B':
+        elif cubo.iloc[1, cubo.columns.get_loc('R')][0] == 'B':
             return 1
     elif face == 'G':
-        if cubo.iloc[5, df.columns.get_loc('R')][0] == 'W':
+        if cubo.iloc[5, cubo.columns.get_loc('R')][0] == 'W':
             return 0
-        elif cubo.iloc[5, df.columns.get_loc('R')][0] == 'Y':
+        elif cubo.iloc[5, cubo.columns.get_loc('R')][0] == 'Y':
             return 1
  
 
@@ -100,7 +99,7 @@ def verificar_segunda_camada(cubo:pd.DataFrame):
 
 def verificar_terceira_camada(cubo:pd.DataFrame):
     """
-        Verifica se todos as peças da primeira linha são iguais e pertencentes ao centro em questão e retorna o centro
+        Verifica se todos as peças da terceira camada são iguais e pertencentes ao centro em questão e retorna o centro
     """
     for col in ['W', 'G', 'B', 'Y']:
         if cubo.iloc[0, cubo.columns.get_loc(col)][0] == col and cubo.iloc[1, cubo.columns.get_loc(col)][0] == col and cubo.iloc[2, cubo.columns.get_loc(col)][0] == col:
@@ -520,5 +519,57 @@ def girar_d(direcao, cubo:pd.DataFrame):
     elif direcao == 2:
         d_linha(cubo)
         d_linha(cubo)   
-#Ideia: Criar uma função que receba a localização de duas peças:{Face:index} e o lado, em relação a face Branca, e determine se estão na mesma coluna de giro(lado)
-#Ideia: Função para determinar se duas peças são opostas 
+
+
+def movimentos_passo5(cubo:pd.DataFrame):
+    f(cubo, 'W')
+    r(cubo, 'W')
+    u(cubo)
+    r_linha(cubo, 'W')
+    u_linha(cubo)
+    f_linha(cubo, 'W')
+
+
+def movimentos_passo6(cubo:pd.DataFrame, face):
+    r(cubo, face)
+    u(cubo)
+    r_linha(cubo, face)
+    u(cubo)
+    r(cubo, face)
+    u(cubo)
+    u(cubo)
+    r_linha(cubo, face)
+
+
+def movimentos_passo8(cubo:pd.DataFrame, face, lado):
+    if lado == 1:
+        u(cubo)
+        l(cubo, face)
+        r_linha(cubo, face)
+        f(cubo, face)
+        f(cubo, face)
+        l_linha(cubo, face)
+        r(cubo, face)
+        u(cubo)
+        f(cubo, face)
+        f(cubo, face)
+    elif lado == -1:
+        u_linha(cubo)
+        r_linha(cubo, face)
+        l(cubo, face)
+        f(cubo, face)
+        f(cubo, face)
+        l_linha(cubo, face)
+        r(cubo, face)
+        u_linha(cubo)
+        f(cubo, face)
+        f(cubo, face)
+
+
+def procurar_meio_superior(cubo:pd.DataFrame, cor):
+    """
+        Verifica o meio da terceira camada de todas as faces horizontais e retorna as que possuir a peça da cor selecionada.
+    """
+    for col in ['W', 'G', 'B', 'Y']:
+        if cubo.iloc[1, cubo.columns.get_loc(col)][0] == cor:
+            return col

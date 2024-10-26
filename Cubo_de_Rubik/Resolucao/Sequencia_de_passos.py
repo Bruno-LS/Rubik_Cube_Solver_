@@ -1,7 +1,6 @@
-from Movimentacoes.Movimentos import *
-from Movimentacoes.Rotacoes_fixas import df as cubo
-import pandas as pd
-from Auxiliares_passos import *
+from .Estrutura_cubo import df as cubo
+from .Auxiliares_passos import *
+
 
 def passo_1(cubo:pd.DataFrame):
     dicionario = mapear_meios(cubo)        
@@ -91,7 +90,6 @@ def passo_3(cubo:pd.DataFrame):
     dicionario = mapear_quina(cubo)
     adjacentes = mapear_adjacentes_quinas(dicionario) 
     itera = iter(adjacentes.items())
-    print(2)
     while adjacentes:
         try:
             face, indice = next(itera)
@@ -162,7 +160,7 @@ def passo_3(cubo:pd.DataFrame):
 
 def passo_4(cubo:pd.DataFrame):
     dicionario = auxiliar_passo4(cubo)
-    itera = iter(dicionario.items())
+    # itera = iter(dicionario.items())
     if dicionario != False:
         while dicionario:
             try:
@@ -198,29 +196,30 @@ def passo_4(cubo:pd.DataFrame):
                 dicionario = auxiliar_passo4(cubo)
             except StopIteration:
                 break
+    else:
         piece = verificar_segunda_camada(cubo)
-    elif piece != False:
-        face, lado = piece
-        
-        if lado == 3:#Esquerda
-            u_linha(cubo)
-            l_linha(cubo, face)
-            u(cubo)
-            l(cubo, face)
-            u(cubo)
-            f(cubo, face)
-            u_linha(cubo)
-            f_linha(cubo, face)
-        elif lado == 5:#Direita
-            u(cubo)
-            r(cubo, face)
-            u_linha(cubo)
-            r_linha(cubo, face)
-            u_linha(cubo)
-            f_linha(cubo, face)
-            u(cubo)
-            f(cubo, face)
-        passo_4(cubo)
+        if piece != False:
+            face, lado = piece
+            
+            if lado == 3:#Esquerda
+                u_linha(cubo)
+                l_linha(cubo, face)
+                u(cubo)
+                l(cubo, face)
+                u(cubo)
+                f(cubo, face)
+                u_linha(cubo)
+                f_linha(cubo, face)
+            elif lado == 5:#Direita
+                u(cubo)
+                r(cubo, face)
+                u_linha(cubo)
+                r_linha(cubo, face)
+                u_linha(cubo)
+                f_linha(cubo, face)
+                u(cubo)
+                f(cubo, face)
+            passo_4(cubo)
 
 
 def passo_5(cubo:pd.DataFrame):
@@ -351,6 +350,7 @@ def passo_6(cubo:pd.DataFrame):
 
 def passo_7(cubo:pd.DataFrame):
     quinas = procurar_quinas_iguais(cubo, ['W', 'G', 'B', 'Y'])
+
     if len(quinas) >= 1:
         face = quinas[0]
         r(cubo, face)
@@ -392,65 +392,64 @@ def passo_8(cubo:pd.DataFrame):
     elif direcao == 2:
         u(cubo)
         u(cubo)
-
+ 
     face_traseira = verificar_terceira_camada(cubo)
+    
     if verifica_primeira_camada(cubo) == False and verificar_segunda_camada(cubo) == False and face_traseira != False:
         face = Face_oposta(face_traseira)
-        meio = cubo.iloc[1, cubo.columns.get_loc(face)][0]
-        lista = procurar_Peca(cubo, meio)
-        face_cm_peca = str(next(iter(lista.keys())))
-        
+        face_cm_peca = procurar_meio_superior(cubo, face)
+
         f(cubo, face)
         f(cubo, face)
-        movimentos_passo8(cubo, face, verificar_centro(face, face_cm_peca))
+        movimentos_passo8(cubo, face, verificar_centro(face_cm_peca, face))
     else:
         face = 'W'
         f(cubo, face)
         f(cubo, face)
-        lista = procurar_Peca(cubo, face)
-        face_cm_peca = str(lista.keys())
-        movimentos_passo8(cubo, face, verificar_centro(face, face_cm_peca))
+        face_cm_peca = procurar_meio_superior(cubo, face)
+
+        movimentos_passo8(cubo, face, verificar_centro(face_cm_peca, face))
         passo_8(cubo)
 
 
 
 
-teste(cubo)
-print_custom_cubo(cubo)
-print("Embaralhado\n\n")
+# teste(cubo)
+# print_custom_cubo(cubo)
+# print("Embaralhado\n\n")
 
-i = passo_1(cubo)
-print_custom_cubo(cubo)
-print("Passo 1: \n\n", i)
+# passo_1(cubo)
+# print_custom_cubo(cubo)
+# print("Passo 1\n\n")
 
-passo_2(cubo)
-print_custom_cubo(cubo)
-print("Passo 2\n\n")
-
-
-passo_3(cubo)
-print_custom_cubo(cubo)
-print("Passo 3\n\n")
+# passo_2(cubo)
+# print_custom_cubo(cubo)
+# print("Passo 2\n\n")
 
 
-passo_4(cubo)
-print_custom_cubo(cubo)
-print("Passo 4\n\n")
+# passo_3(cubo)
+# print_custom_cubo(cubo)
+# print("Passo 3\n\n")
 
-passo_5(cubo)
-print_custom_cubo(cubo)
-print("Passo 5\n\n")
 
-passo_6(cubo)
-print_custom_cubo(cubo)
-print("Passo 6\n\n")
+# passo_4(cubo)
+# print_custom_cubo(cubo)
+# print("Passo 4\n\n")
 
-passo_7(cubo)
-print_custom_cubo(cubo)
-print("Passo 7\n\n")
+# passo_5(cubo)
+# print_custom_cubo(cubo)
+# print("Passo 5\n\n")
 
-passo_8(cubo)
-print_custom_cubo(cubo)
-print("Passo 8\n\n")
+# passo_6(cubo)
+# print_custom_cubo(cubo)
+# print("Passo 6\n\n")
+
+# passo_7(cubo)
+# print_custom_cubo(cubo)
+# print("Passo 7\n\n")
+
+# passo_8(cubo)
+# print_custom_cubo(cubo)
+# print("Passo 8\n\n")
 
 
